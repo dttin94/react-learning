@@ -20,6 +20,10 @@ const list = [
   },
 ];
 
+const isSearched = (searchTerm) => (item) =>
+  !searchTerm || item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  || item.author.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
 
   constructor(props) {
@@ -27,9 +31,15 @@ class App extends Component {
 
     this.state = {
       list,
+      searchTerm: '',
     }
 
+    this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
   }
 
   onDismiss(id) {
@@ -40,7 +50,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        { this.state.list.map(item => {
+        <form>
+          <input type="text" onChange={this.onSearchChange}/>
+        </form>
+        { this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
           return (
             <div key={item.objectID}>
               <span>
