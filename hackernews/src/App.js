@@ -8,7 +8,7 @@ const list = [
     author: 'Jordan Walke',
     num_comments: 3,
     points: 4,
-    objectID: 0
+    objectID: 0,
   },
   {
     title: 'Redux',
@@ -16,15 +16,13 @@ const list = [
     author: 'Dan Abramov, Andrew Clark',
     num_comments: 2,
     points: 5,
-    objectID: 1
-  }
+    objectID: 1,
+  },
 ];
 
-function isSearched(searchTerm) {
-    return function(item) {
-      return !searchTerm || item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-  }
+const isSearched = (searchTerm) => (item) =>
+  !searchTerm || item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  || item.author.toLowerCase().includes(searchTerm.toLowerCase());
 
 class App extends Component {
 
@@ -34,7 +32,7 @@ class App extends Component {
     this.state = {
       list,
       searchTerm: '',
-    };
+    }
 
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
@@ -55,7 +53,7 @@ class App extends Component {
         <form>
           <input type="text" onChange={this.onSearchChange}/>
         </form>
-        { this.state.list.map(item => {
+        { this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
           return (
             <div key={item.objectID}>
               <span>
@@ -65,12 +63,10 @@ class App extends Component {
               <span>{item.num_comments}</span>
               <span>{item.points}</span>
               <span>
-                <button onClick={() => this.onDismiss(item.objectID)} type="button">
-                  Dismiss
-                </button>
+                <button onClick={() => this.onDismiss(item.objectID)} type="button">Dismiss</button>
               </span>
             </div>
-          )
+          );
         })}
       </div>
     );
